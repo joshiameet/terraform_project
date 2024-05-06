@@ -1,0 +1,72 @@
+---
+- name: Install prerequisites
+  apt:
+    name: aptitude
+    update_cache: yes
+    state: latest
+    force_apt_get: yes
+  tags: [ system ]
+
+- name: Install MySQL and PyMySQL Package
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop: [ 'mysql-server', 'python3-pymysql' ]
+  tags: [ system ]
+
+- name: Set the root password
+  mysql_user:
+    name: root
+    password: "{{ mysql_root_password }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  tags: [ mysql, mysql-root ]
+
+- name: Remove all anonymous user accounts
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+- name: Remove the MySQL test database
+  mysql_db:
+    name: test
+    state: absent
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+- name: Creates database for WordPress
+  mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+- name: Create MySQL user for WordPress
+  mysql_user:
+    name: "{{ mysql_user }}"
+#    host: "{{ mysql_client }}"
+    password: "{{ mysql_password }}"
+    priv: "{{ mysql_db }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+  tags: [ mysql ]
+
+#- name: MySQL bind address open
+#  ini_file:
+#    dest: /etc/mysql/mysql.conf.d/mysqld.cnf
+#    section: mysqld
+#    option: "{{ item.option }}"
+#    value: "{{ item.value }}"
+#  register: my_cnf
+#  with_items:
+#    - { option: bind-address, value: 0.0.0.0 }
+
+- name: Restarting MySQL
+  command: service mysql restart

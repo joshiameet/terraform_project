@@ -1,0 +1,24 @@
+---
+#System Settings
+server_packages: [ 'apache2', 'mysql-client', 'php', 'libapache2-mod-php', 'php-mysql', 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip' ]
+
+#MySQL Settings
+mysql_root_password: "root-password"
+mysql_db: "db"
+mysql_user: "db-admin"
+mysql_password: "dp-password"
+mysql_host: "127.0.0.1"
+mysql_port: "3306"
+mysql_client: ""
+
+#HTTP Settings
+http_host: "ameetjoshi.online"
+http_conf: "ameetjoshi.online.conf"
+http_port: "80"
+
+#WP Settings
+wp_url: "ameetjoshi.online"
+wp_title: "ameetjoshi.online"
+wp_admin: "admin"
+wp_password: "admin-password"
+wp_email: "glosowania_online@zdt.io"
